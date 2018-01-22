@@ -610,7 +610,8 @@ static void * KVOContext = &KVOContext;
 {
     NSURL* url = [navigationAction.request URL];
     CDVViewController* vc = (CDVViewController*)self.viewController;
-
+    
+    
     /*
      * Give plugins the chance to handle the url
      */
@@ -647,6 +648,28 @@ static void * KVOContext = &KVOContext;
 
     if (shouldAllowRequest) {
         NSString *scheme = url.scheme;
+        
+        if (!url.fileURL && ([scheme isEqualToString:@"http"] ||
+            [scheme isEqualToString:@"https"])) {
+//                NSLog(@"[URL] %@", url);
+            
+            NSString * u = [url absoluteString];
+            
+            if (   [u rangeOfString:@"facebook.com"].location == NSNotFound
+                && [u rangeOfString:@"youtube.com"].location == NSNotFound
+                && [u rangeOfString:@"twitter.com"].location == NSNotFound
+                && [u rangeOfString:@"doubleclick.net"].location == NSNotFound
+                && [u rangeOfString:@"tpc.googlesyndication.com"].location == NSNotFound
+                && [u rangeOfString:@":8100"].location == NSNotFound
+            ) {
+
+                [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
+                [[UIApplication sharedApplication] openURL:url];
+                decisionHandler(WKNavigationActionPolicyCancel);
+                return;
+            }
+        }
+        
         if ([scheme isEqualToString:@"tel"] ||
             [scheme isEqualToString:@"mailto"] ||
             [scheme isEqualToString:@"facetime"] ||
@@ -663,6 +686,11 @@ static void * KVOContext = &KVOContext;
     }
 }
 
+- (NSUInteger)findIndexOfWord:(NSString *)word inString:(NSString *)string {
+    NSArray *substrings = [string componentsSeparatedByString:@" "];
+    
+    return [substrings indexOfObject: word];
+}
 @end
 
 #pragma mark - CDVWKWeakScriptMessageHandler
