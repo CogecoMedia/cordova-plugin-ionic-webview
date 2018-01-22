@@ -610,8 +610,7 @@ static void * KVOContext = &KVOContext;
 {
     NSURL* url = [navigationAction.request URL];
     CDVViewController* vc = (CDVViewController*)self.viewController;
-    
-    
+
     /*
      * Give plugins the chance to handle the url
      */
@@ -658,9 +657,10 @@ static void * KVOContext = &KVOContext;
             if (   [u rangeOfString:@"facebook.com"].location == NSNotFound
                 && [u rangeOfString:@"youtube.com"].location == NSNotFound
                 && [u rangeOfString:@"twitter.com"].location == NSNotFound
-                && [u rangeOfString:@"doubleclick.net"].location == NSNotFound
-                && [u rangeOfString:@"tpc.googlesyndication.com"].location == NSNotFound
+                && [u rangeOfString:@"vimeo.com"].location == NSNotFound
+                && [u rangeOfString:@"9gag.com"].location == NSNotFound
                 && [u rangeOfString:@":8100"].location == NSNotFound
+                && [navigationAction navigationType] != -1
             ) {
 
                 [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
@@ -684,12 +684,6 @@ static void * KVOContext = &KVOContext;
     } else {
         decisionHandler(WKNavigationActionPolicyCancel);
     }
-}
-
-- (NSUInteger)findIndexOfWord:(NSString *)word inString:(NSString *)string {
-    NSArray *substrings = [string componentsSeparatedByString:@" "];
-    
-    return [substrings indexOfObject: word];
 }
 @end
 
