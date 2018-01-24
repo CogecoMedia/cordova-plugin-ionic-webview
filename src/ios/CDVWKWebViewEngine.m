@@ -660,6 +660,7 @@ static void * KVOContext = &KVOContext;
                 && [u rangeOfString:@"vimeo.com"].location == NSNotFound
                 && [u rangeOfString:@"9gag.com"].location == NSNotFound
                 && [u rangeOfString:@":8100"].location == NSNotFound
+                && [u rangeOfString:@"localhost"].location == NSNotFound
                 && [navigationAction navigationType] != -1
             ) {
 
